@@ -37,7 +37,9 @@ def get_word_count(w_list, w_set):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Counts the words in a Microsoft Word document.')
 	parser.add_argument('input_file', action='store', type=str, help='Enter the name of the file you want to perform the word count on.')
-	parser.add_argument('-o', '--output', action='store', default=False, help='Enter filename for output')
+	group = parser.add_mutually_exclusive_group(required=False)
+	group.add_argument('-o', '--output', action='store', default=False, help='Enter filename for output')
+	group.add_argument('-v', '--verbose', action='store_true', default=True, help='To print results to screen')
 	args = parser.parse_args()
 		
 	file_name = args.input_file
@@ -47,7 +49,8 @@ if __name__ == '__main__':
 	if args.output:
 		with open(args.output) as f:
 			for i, line in enumerate(count_doc):
-				f.write('%d %s : %d' % (i, line[0], line[1]))
-	for i, line in enumerate(count_doc):
-		print('%d %s' % (i, line))
-	
+				f.write('%d %s : %d' % (i+1, line[0], line[1]))
+	if args.verbose:
+		for i, line in enumerate(count_doc):
+			if line[1] >= 3:
+				print('%d %s : %d' % (i+1, line[0], line[1]))
