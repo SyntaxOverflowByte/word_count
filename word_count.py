@@ -33,7 +33,6 @@ def get_word_count(w_list, w_set):
 		word_count[word] = counter
 	return sorted(word_count.items(), key=lambda kv: kv[1], reverse=True)
 
-
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Counts the words in a Microsoft Word document.')
 	parser.add_argument('input_file', action='store', type=str, help='Enter the name of the file you want to perform the word count on.')
