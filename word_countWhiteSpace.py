@@ -17,9 +17,12 @@ def extract_words(doc):
 		para_set.add(doc.paragraphs[i].text)
 	word_list = []
 	for i in para_set:
-		words = re.split('\W+', i)
-		for p in range(len(words)):
-			word_list.append(words[p].lower())
+		words = re.split('\s+', i)
+		for p, word in enumerate(words):
+			word = re.sub(u'\u201c','"', word)
+			word = re.sub(u'\u201d', '"', word)
+			word = word.lower().strip(",.\?\"\!")
+			word_list.append(word)
 	word_set = set(word_list)
 	return word_list, word_set
 

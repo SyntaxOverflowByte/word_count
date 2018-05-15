@@ -11,27 +11,30 @@ def load_document(filename):
 	document = Document(filename)
 	return document
 
-def extract_words(doc):
+def extract_sentences(doc):
 	para_set = set()
 	for i in range(len(doc.paragraphs)):
 		para_set.add(doc.paragraphs[i].text)
-	word_list = []
+	sentence_list = []
 	for i in para_set:
-		words = re.split('\W+', i)
-		for p in range(len(words)):
-			word_list.append(words[p].lower())
-	word_set = set(word_list)
-	return word_list, word_set
+		sentences = re.split('\b', i)
+		for p, sentence in enumerate(sentences):
+			sentence = re.sub(u'\u201c','"', sentence)
+			sentence = re.sub(u'\u201d', '"', sentence)
+			sentence = sentence.lower().strip(",.\?\"\!")
+			sentence_list.append(sentence)
+	sentence_set = set(sentence_list)
+	return sentence_list, sentence_set
 
-def get_word_count(w_list, w_set):
-	word_count = {}
-	for word in w_set:
+def get_sentence_count(w_list, w_set):
+	sentence_count = {}
+	for sentence in w_set:
 		counter = 0
 		for i in range(len(w_list)):
-			if word == w_list[i]:
+			if sentence == w_list[i]:
 				counter += 1
-		word_count[word] = counter
-	return sorted(word_count.items(), key=lambda kv: kv[1], reverse=True)
+		sentence_count[sentence] = counter
+	return sorted(sentence_count.items(), key=lambda kv: kv[1], reverse=True)
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Counts the words in a Microsoft Word document.')
@@ -43,8 +46,8 @@ if __name__ == '__main__':
 		
 	file_name = args.input_file
 	in_doc = load_document(file_name)
-	list_doc, set_doc = extract_words(in_doc)
-	count_doc = get_word_count(list_doc, set_doc)
+	list_doc, set_doc = extract_sentences(in_doc)
+	count_doc = get_sentence_count(list_doc, set_doc)
 	if args.output:
 		with open(args.output, 'w') as f:
 			for i, line in enumerate(count_doc):
